@@ -119,15 +119,9 @@ export function NavBar() {
             />
             <span style={{ color: colors.white, fontSize: 12 }}>–</span>
             <span style={{
-              fontSize: 32,
-              fontWeight: 400,
+              fontSize: typography.sizeMd,
+              fontWeight: typography.weightMedium,
               color: colors.white,
-              letterSpacing: 6,
-              lineHeight: 1,
-              transform: 'scaleX(0.45)',
-              transformOrigin: 'left center',
-              display: 'flex',
-              alignItems: 'center',
             }}>
               CMS
             </span>
