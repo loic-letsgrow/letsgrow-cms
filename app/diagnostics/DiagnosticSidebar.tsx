@@ -47,7 +47,8 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
     d.crop.toLowerCase().includes(searchTerm.toLowerCase()) ||
     d.primary_common_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     d.primary_diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    d.model_name.toLowerCase().includes(searchTerm.toLowerCase())
+    d.model_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (d.status || 'pending').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const pendingDiagnoses = filtered.filter(d => d.status !== 'done')
