@@ -75,25 +75,25 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
     flexDirection: 'column',
   }
 
-  const groupHeaderStyle = (color: string): CSSProperties => ({
+  const groupHeaderStyle = (color: string, isFirst: boolean): CSSProperties => ({
     backgroundColor: color,
-    borderRadius: 0,
-    padding: `4px ${dimensions.spacingSm}px`,
+    padding: `${dimensions.spacingSm}px ${dimensions.spacingSm}px`,
     fontSize: typography.sizeXs,
     fontWeight: typography.weightSemibold,
     color: colors.textDarkBlue,
     textTransform: 'uppercase',
     flexShrink: 0,
-    marginBottom: dimensions.spacingXs,
+    marginBottom: dimensions.spacingSm,
+    marginTop: isFirst ? 0 : dimensions.spacingMd,
     marginLeft: -dimensions.spacingSm,
     marginRight: -dimensions.spacingSm,
   })
 
-  const renderGroup = (items: Diagnosis[], label: string, color: string) => {
+  const renderGroup = (items: Diagnosis[], label: string, color: string, isFirst: boolean) => {
     if (items.length === 0) return null
     return (
       <>
-        <div style={groupHeaderStyle(color)}>{label}</div>
+        <div style={groupHeaderStyle(color, isFirst)}>{label}</div>
         {items.map((d, index) => (
           <Fragment key={d.id}>
             <DiagnosticCard
@@ -122,11 +122,8 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
         <SearchPill value={searchTerm} onChange={setSearchTerm} placeholder="Search" />
       </div>
       <div style={listStyle}>
-        {renderGroup(pendingDiagnoses, 'Pending', colors.diagnosisPending)}
-        {pendingDiagnoses.length > 0 && doneDiagnoses.length > 0 && (
-          <div style={{ marginTop: dimensions.spacingMd }} />
-        )}
-        {renderGroup(doneDiagnoses, 'Done', colors.diagnosisDone)}
+        {renderGroup(pendingDiagnoses, 'Pending', colors.diagnosisPending, true)}
+        {renderGroup(doneDiagnoses, 'Done', colors.diagnosisDone, pendingDiagnoses.length === 0)}
         {filtered.length === 0 && (
           <div style={{ padding: dimensions.spacingMd, color: colors.superDarkGrey, fontSize: typography.sizeXs, textAlign: 'center' }}>
             No diagnoses found
