@@ -77,7 +77,7 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
 
   const groupHeaderStyle = (color: string): CSSProperties => ({
     backgroundColor: color,
-    borderRadius: dimensions.radiusSmall,
+    borderRadius: 0,
     padding: `4px ${dimensions.spacingSm}px`,
     fontSize: typography.sizeXs,
     fontWeight: typography.weightSemibold,
@@ -85,6 +85,8 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
     textTransform: 'uppercase',
     flexShrink: 0,
     marginBottom: dimensions.spacingXs,
+    marginLeft: -dimensions.spacingSm,
+    marginRight: -dimensions.spacingSm,
   })
 
   const renderGroup = (items: Diagnosis[], label: string, color: string) => {
