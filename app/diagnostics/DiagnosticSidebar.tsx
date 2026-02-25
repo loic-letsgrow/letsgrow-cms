@@ -26,12 +26,18 @@ export interface Diagnosis {
   expert_notes: string | null
   treatment_validation: string | null
   expert_correct_treatment: string | null
+  status: string
 }
 
 interface DiagnosticSidebarProps {
   diagnoses: Diagnosis[]
   selectedId: string | null
   onSelect: (id: string) => void
+}
+
+function getStatusColor(status: string): string {
+  if (status === 'done') return colors.diagnosisDone
+  return colors.diagnosisPending
 }
 
 export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: DiagnosticSidebarProps) {
@@ -43,6 +49,9 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
     d.primary_diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) ||
     d.model_name.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const pendingDiagnoses = filtered.filter(d => d.status !== 'done')
+  const doneDiagnoses = filtered.filter(d => d.status === 'done')
 
   const sidebarStyle: CSSProperties = {
     width: dimensions.sidebarWidth,
@@ -66,20 +75,31 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
     flexDirection: 'column',
   }
 
-  return (
-    <aside style={sidebarStyle}>
-      <div style={searchWrapperStyle}>
-        <SearchPill value={searchTerm} onChange={setSearchTerm} placeholder="Search" />
-      </div>
-      <div style={listStyle}>
-        {filtered.map((d, index) => (
+  const groupHeaderStyle = (color: string): CSSProperties => ({
+    backgroundColor: color,
+    borderRadius: dimensions.radiusSmall,
+    padding: `4px ${dimensions.spacingSm}px`,
+    fontSize: typography.sizeXs,
+    fontWeight: typography.weightSemibold,
+    color: colors.textDarkBlue,
+    textTransform: 'uppercase',
+    flexShrink: 0,
+    marginBottom: dimensions.spacingXs,
+  })
+
+  const renderGroup = (items: Diagnosis[], label: string, color: string) => {
+    if (items.length === 0) return null
+    return (
+      <>
+        <div style={groupHeaderStyle(color)}>{label}</div>
+        {items.map((d, index) => (
           <Fragment key={d.id}>
             <DiagnosticCard
               diagnosis={d}
               isSelected={d.id === selectedId}
               onClick={() => onSelect(d.id)}
             />
-            {index < filtered.length - 1 && (
+            {index < items.length - 1 && (
               <div style={{
                 height: 1,
                 backgroundColor: colors.lightBlueBorder,
@@ -90,6 +110,21 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
             )}
           </Fragment>
         ))}
+      </>
+    )
+  }
+
+  return (
+    <aside style={sidebarStyle}>
+      <div style={searchWrapperStyle}>
+        <SearchPill value={searchTerm} onChange={setSearchTerm} placeholder="Search" />
+      </div>
+      <div style={listStyle}>
+        {renderGroup(pendingDiagnoses, 'Pending', colors.diagnosisPending)}
+        {pendingDiagnoses.length > 0 && doneDiagnoses.length > 0 && (
+          <div style={{ marginTop: dimensions.spacingMd }} />
+        )}
+        {renderGroup(doneDiagnoses, 'Done', colors.diagnosisDone)}
         {filtered.length === 0 && (
           <div style={{ padding: dimensions.spacingMd, color: colors.superDarkGrey, fontSize: typography.sizeXs, textAlign: 'center' }}>
             No diagnoses found
@@ -120,6 +155,7 @@ function DiagnosticCard({ diagnosis, isSelected, onClick }: { diagnosis: Diagnos
     cursor: 'pointer',
     width: '100%',
     borderLeft: `3px solid ${getValidationColor()}`,
+    position: 'relative',
   }
 
   const nameStyle: CSSProperties = {
@@ -161,17 +197,28 @@ function DiagnosticCard({ diagnosis, isSelected, onClick }: { diagnosis: Diagnos
       onMouseLeave={() => setIsHovered(false)}
       style={cardStyle}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }}>
-        <span style={nameStyle}>{diagnosis.crop}</span>
-        <span style={{ ...subtextStyle, fontSize: typography.sizeXxxs, flexShrink: 0, marginLeft: 6 }}>
-          {new Date(diagnosis.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })}
-        </span>
+      <div style={{
+        position: 'absolute',
+        top: 6,
+        right: dimensions.spacingSm,
+        width: 14,
+        height: 14,
+        borderRadius: '50%',
+        backgroundColor: getStatusColor(diagnosis.status),
+      }} />
+      <div style={{ paddingRight: 18 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }}>
+          <span style={nameStyle}>{diagnosis.crop}</span>
+          <span style={{ ...subtextStyle, fontSize: typography.sizeXxxs, flexShrink: 0, marginLeft: 6 }}>
+            {new Date(diagnosis.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })}
+          </span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+          <span style={subtextStyle}>{diagnosis.primary_diagnosis}</span>
+          <span style={confidenceBadgeStyle}>{diagnosis.primary_confidence}%</span>
+        </div>
+        <div style={subtextStyle}>{diagnosis.model_name}</div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-        <span style={subtextStyle}>{diagnosis.primary_diagnosis}</span>
-        <span style={confidenceBadgeStyle}>{diagnosis.primary_confidence}%</span>
-      </div>
-      <div style={subtextStyle}>{diagnosis.model_name}</div>
     </button>
   )
 }

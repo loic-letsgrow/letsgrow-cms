@@ -1,6 +1,6 @@
 'use client'
 
-import { CSSProperties, useState } from 'react'
+import { CSSProperties, useState, useEffect, useRef } from 'react'
 import { colors, dimensions, typography } from '@/lib/theme'
 import { Diagnosis } from './DiagnosticSidebar'
 import { Badge } from '@/components/shared/ui/Badge'
@@ -9,10 +9,12 @@ import { DiagnosisValidation, TreatmentValidation } from './ValidationButtons'
 
 interface DiagnosticDetailProps {
   diagnosis: Diagnosis | null
+  status: string
+  onStatusChange: (newStatus: string) => void
   onUpdate: (fields: Partial<Diagnosis>) => void
 }
 
-export function DiagnosticDetail({ diagnosis, onUpdate }: DiagnosticDetailProps) {
+export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }: DiagnosticDetailProps) {
   const mainStyle: CSSProperties = {
     flex: 1,
     overflowY: 'auto',
@@ -129,6 +131,7 @@ export function DiagnosticDetail({ diagnosis, onUpdate }: DiagnosticDetailProps)
             initialNote={diagnosis.expert_notes}
             onSaved={(note) => { diagnosis.expert_notes = note }}
           />
+          <StatusSelect value={status} onChange={onStatusChange} />
           <div style={{ marginLeft: 'auto', fontSize: typography.sizeSm, color: colors.textDarkBlue, flexShrink: 0, textAlign: 'right' }}>
             <div>{date}</div>
             <div>{diagnosis.model_name}</div>
@@ -301,6 +304,128 @@ export function DiagnosticDetail({ diagnosis, onUpdate }: DiagnosticDetailProps)
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+const statusOptions = [
+  { value: 'pending', label: 'PENDING' },
+  { value: 'done', label: 'DONE' },
+]
+
+function getStatusColor(status: string): string {
+  if (status === 'done') return colors.diagnosisDone
+  return colors.diagnosisPending
+}
+
+function StatusSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const currentOption = statusOptions.find(o => o.value === value)
+
+  const containerStyle: CSSProperties = {
+    position: 'relative',
+    width: 100,
+  }
+
+  const buttonStyle: CSSProperties = {
+    appearance: 'none',
+    width: '100%',
+    height: 30,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderRadius: dimensions.radiusSmall,
+    border: 'none',
+    backgroundColor: getStatusColor(value),
+    fontSize: typography.sizeXs,
+    fontWeight: typography.weightSemibold,
+    color: colors.textDarkBlue,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    transform: isHovered ? 'scale(1.03)' : 'scale(1)',
+    boxShadow: isHovered
+      ? '0 3px 5px -1px rgba(0, 0, 0, 0.15), 0 2px 3px -1px rgba(0, 0, 0, 0.1)'
+      : '0 1px 2px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 150ms ease-out, box-shadow 150ms ease-out',
+  }
+
+  const chevronStyle: CSSProperties = {
+    width: 6,
+    height: 6,
+    borderRight: `2px solid ${colors.textDarkBlue}`,
+    borderBottom: `2px solid ${colors.textDarkBlue}`,
+    transform: isOpen ? 'rotate(-135deg)' : 'rotate(45deg)',
+    flexShrink: 0,
+    marginTop: isOpen ? 2 : -2,
+    transition: 'transform 150ms ease-out',
+  }
+
+  const dropdownStyle: CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    zIndex: 10,
+    borderRadius: dimensions.radiusSmall,
+    backgroundColor: 'transparent',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+    overflow: 'hidden',
+  }
+
+  const getOptionStyle = (optValue: string): CSSProperties => ({
+    height: 30,
+    paddingLeft: 12,
+    paddingRight: 12,
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: typography.sizeXs,
+    cursor: 'pointer',
+    backgroundColor: getStatusColor(optValue),
+    color: colors.textDarkBlue,
+    fontWeight: typography.weightSemibold,
+  })
+
+  return (
+    <div ref={containerRef} style={containerStyle}>
+      <button
+        style={buttonStyle}
+        onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {currentOption?.label || value}
+        <span style={chevronStyle} />
+      </button>
+      {isOpen && (
+        <div style={dropdownStyle}>
+          {statusOptions.map(option => (
+            <div
+              key={option.value}
+              style={getOptionStyle(option.value)}
+              onClick={() => {
+                onChange(option.value)
+                setIsOpen(false)
+              }}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -17,4 +17,6 @@ export const colors = {
   brightGreen: '#A3E635',
   error: '#EF4444',
   focusBorder: '#2A62D9',
+  diagnosisPending: '#EAB308',
+  diagnosisDone: '#A3E635',
 }
