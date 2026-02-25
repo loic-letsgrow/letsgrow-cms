@@ -159,12 +159,13 @@ interface DiagnosisValidationProps {
   crop: string
   label: string
   value: string
+  confidence?: number | null
   currentValidation: string | null
   currentCorrect: string | null
   onSaved: (validation: string | null, correct: string | null) => void
 }
 
-export function DiagnosisValidation({ diagnosisId, crop, label, value, currentValidation, currentCorrect, onSaved }: DiagnosisValidationProps) {
+export function DiagnosisValidation({ diagnosisId, crop, label, value, confidence, currentValidation, currentCorrect, onSaved }: DiagnosisValidationProps) {
   const [validation, setValidation] = useState(currentValidation ?? '')
   const [correctDiagnosis, setCorrectDiagnosis] = useState(currentCorrect ?? '')
   const [manualEntry, setManualEntry] = useState('')
@@ -236,7 +237,26 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, currentVa
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: dimensions.spacingSm }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <span style={labelStyle}>Primary</span>
-          <div style={valueStyle}>{value}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: dimensions.spacingSm }}>
+            <span style={valueStyle}>{value}</span>
+            {confidence != null && (
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderRadius: 9999,
+                paddingLeft: 8,
+                paddingRight: 8,
+                paddingTop: 1,
+                paddingBottom: 1,
+                fontSize: typography.sizeXs,
+                fontWeight: typography.weightMedium,
+                backgroundColor: 'transparent',
+                border: `1px solid ${colors.primaryBlue}`,
+                color: colors.textDarkBlue,
+                flexShrink: 0,
+              }}>{confidence}%</span>
+            )}
+          </div>
         </div>
         <div style={{ width: 82, flexShrink: 0, paddingTop: 10 }}>
           <ValidationSelect

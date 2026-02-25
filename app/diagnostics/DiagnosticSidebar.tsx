@@ -16,6 +16,7 @@ export interface Diagnosis {
   primary_confidence: number
   secondary_diagnosis: string | null
   secondary_common_name: string | null
+  secondary_confidence: number | null
   treatment_shown: boolean
   treatment_group: string | null
   expert_validation: string | null

@@ -164,27 +164,8 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
           {/* Results card — wrapper locks height to match photo aspect ratio */}
           <div style={{ aspectRatio: '3 / 4', overflow: 'hidden' }}>
           <div style={{ ...cardStyle, overflowY: 'auto', height: '100%', boxSizing: 'border-box' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: dimensions.spacingMd }}>
-              <div style={{ fontSize: 21, fontWeight: typography.weightSemibold, color: colors.textDarkBlue }}>
-                Diagnosis
-              </div>
-              <span style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 9999,
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingTop: 2,
-                paddingBottom: 2,
-                fontSize: typography.sizeSm,
-                fontWeight: typography.weightMedium,
-                backgroundColor: 'transparent',
-                border: `1px solid ${colors.primaryBlue}`,
-                color: colors.textDarkBlue,
-              }}>
-                {diagnosis.primary_confidence}%
-              </span>
+            <div style={{ fontSize: 21, fontWeight: typography.weightSemibold, color: colors.textDarkBlue, marginBottom: dimensions.spacingMd }}>
+              Diagnosis
             </div>
 
           <div style={fieldStyle}>
@@ -194,6 +175,7 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
               crop={diagnosis.crop}
               label="Primary"
               value={diagnosis.primary_diagnosis}
+              confidence={diagnosis.primary_confidence}
               currentValidation={expertValidation}
               currentCorrect={expertCorrectDiagnosis}
               onSaved={(v, c) => { setExpertValidation(v); setExpertCorrectDiagnosis(c); onUpdate({ expert_validation: v, expert_correct_diagnosis: c }) }}
@@ -203,7 +185,26 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
           {diagnosis.secondary_diagnosis && diagnosis.primary_confidence < 70 && (
             <div style={fieldStyle}>
               <span style={labelStyle}>Secondary</span>
-              <div style={valueStyle}>{diagnosis.secondary_diagnosis}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: dimensions.spacingSm }}>
+                <span style={valueStyle}>{diagnosis.secondary_diagnosis}</span>
+                {diagnosis.secondary_confidence != null && (
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    borderRadius: 9999,
+                    paddingLeft: 8,
+                    paddingRight: 8,
+                    paddingTop: 1,
+                    paddingBottom: 1,
+                    fontSize: typography.sizeXs,
+                    fontWeight: typography.weightMedium,
+                    backgroundColor: 'transparent',
+                    border: `1px solid ${colors.primaryBlue}`,
+                    color: colors.textDarkBlue,
+                    flexShrink: 0,
+                  }}>{diagnosis.secondary_confidence}%</span>
+                )}
+              </div>
             </div>
           )}
 
@@ -221,7 +222,7 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
             ) : (
               <>
                 <span style={labelStyle}>Treatment</span>
-                <div style={valueStyle}>No</div>
+                <div style={valueStyle}>Not safe to recommend</div>
               </>
             )}
           </div>
