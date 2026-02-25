@@ -20,7 +20,7 @@ export default function DiagnosticsPage() {
     const fetchDiagnoses = async () => {
       const supabase = createBrowserClient()
       const { data, error } = await supabase
-        .from('diagnostics')
+        .from('diagnoses')
         .select('id, session_id, created_at, crop, model_name, cost_usd, primary_diagnosis, primary_common_name, primary_confidence, secondary_diagnosis, secondary_common_name, treatment_shown, treatment_group, expert_validation, expert_correct_diagnosis, photo_1_url, photo_2_url, reasoning, expert_notes, treatment_validation, expert_correct_treatment, status, treatment_groups(name, active_ingredients)')
         .order('created_at', { ascending: false })
 
@@ -80,7 +80,7 @@ export default function DiagnosticsPage() {
 
     const supabase = createBrowserClient()
     const { error } = await supabase
-      .from('diagnostics')
+      .from('diagnoses')
       .update({ status: newStatus })
       .eq('id', id)
 

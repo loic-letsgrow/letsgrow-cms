@@ -187,7 +187,7 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, currentVa
   const save = async (val: string, correct: string | null) => {
     const supabase = createBrowserClient()
     const { error } = await supabase
-      .from('diagnostics')
+      .from('diagnoses')
       .update({
         expert_validation: val || null,
         expert_correct_diagnosis: correct || null,
@@ -327,7 +327,7 @@ export function TreatmentValidation({ diagnosisId, label, value, currentValidati
   const save = async (val: string, correct: string | null) => {
     const supabase = createBrowserClient()
     const { error } = await supabase
-      .from('diagnostics')
+      .from('diagnoses')
       .update({
         treatment_validation: val || null,
         expert_correct_treatment: correct || null,

@@ -21,7 +21,7 @@ export function NotePopup({ diagnosisId, initialNote, onSaved }: NotePopupProps)
     setSaving(true)
     const supabase = createBrowserClient()
     await supabase
-      .from('diagnostics')
+      .from('diagnoses')
       .update({ expert_notes: note || null })
       .eq('id', diagnosisId)
     setSaving(false)
