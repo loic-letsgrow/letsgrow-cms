@@ -9,7 +9,7 @@ import { VERSION } from '@/version'
 import { colors, dimensions, typography } from '@/lib/theme'
 
 const menuItems = [
-  { label: 'Diagnostics', href: '/diagnostics' },
+  { label: 'Diagnosis', href: '/diagnostics' },
   { label: 'Dashboard', href: '/dashboard' },
 ]
 
