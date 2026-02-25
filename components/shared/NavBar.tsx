@@ -50,7 +50,7 @@ export function NavBar() {
 
   const containerStyle: CSSProperties = {
     height: '100%',
-    paddingLeft: dimensions.spacingLg,
+    paddingLeft: 0,
     paddingRight: dimensions.spacingLg,
     display: 'flex',
     alignItems: 'center',
