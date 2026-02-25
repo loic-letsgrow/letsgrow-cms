@@ -21,7 +21,7 @@ export default function DiagnosticsPage() {
       const supabase = createBrowserClient()
       const { data, error } = await supabase
         .from('diagnostics')
-        .select('id, session_id, created_at, crop, model_name, primary_diagnosis, primary_common_name, primary_confidence, secondary_diagnosis, secondary_common_name, treatment_shown, treatment_group, expert_validation, expert_correct_diagnosis, photo_1_url, photo_2_url, reasoning, expert_notes, treatment_validation, expert_correct_treatment, status, treatment_groups(name, active_ingredients)')
+        .select('id, session_id, created_at, crop, model_name, cost_usd, primary_diagnosis, primary_common_name, primary_confidence, secondary_diagnosis, secondary_common_name, treatment_shown, treatment_group, expert_validation, expert_correct_diagnosis, photo_1_url, photo_2_url, reasoning, expert_notes, treatment_validation, expert_correct_treatment, status, treatment_groups(name, active_ingredients)')
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -131,12 +131,11 @@ export default function DiagnosticsPage() {
         />
       </div>
       {warningMessage && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+        <div onClick={() => setWarningMessage(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, cursor: 'pointer' }}>
           <div style={{ backgroundColor: colors.white, borderRadius: dimensions.radiusMedium, padding: dimensions.spacingLg, minWidth: 300, textAlign: 'center' }}>
-            <div style={{ fontSize: typography.sizeMd, fontWeight: typography.weightSemibold, color: colors.textDarkBlue, marginBottom: dimensions.spacingMd }}>
+            <div style={{ fontSize: typography.sizeMd, fontWeight: typography.weightNormal, color: colors.textDarkBlue }}>
               {warningMessage}
             </div>
-            <PillButton label="OK" variant="primary" onClick={() => setWarningMessage(null)} width={100} />
           </div>
         </div>
       )}

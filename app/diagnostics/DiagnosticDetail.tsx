@@ -134,7 +134,14 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
           <StatusSelect value={status} onChange={onStatusChange} />
           <div style={{ marginLeft: 'auto', fontSize: typography.sizeSm, color: colors.textDarkBlue, flexShrink: 0, textAlign: 'right' }}>
             <div>{date}</div>
-            <div>{diagnosis.model_name}</div>
+            <div>
+              {diagnosis.model_name}
+              {diagnosis.cost_usd != null && (
+                <span style={{ marginLeft: 6 }}>
+                  ({(diagnosis.cost_usd * 100).toFixed(1)}¢)
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

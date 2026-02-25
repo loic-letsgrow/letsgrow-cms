@@ -10,6 +10,7 @@ export interface Diagnosis {
   created_at: string
   crop: string
   model_name: string
+  cost_usd: number | null
   primary_diagnosis: string
   primary_common_name: string
   primary_confidence: number
