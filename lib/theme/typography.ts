@@ -1,0 +1,16 @@
+export const typography = {
+  fontFamily: 'Inter, system-ui, sans-serif',
+  sizeXxxs: 10,
+  sizeXxs: 11,
+  sizeXs: 12,
+  sizeXsSm: 13,
+  sizeSm: 14,
+  sizeMd: 16,
+  sizeLg: 18,
+  sizeXl: 24,
+  sizeXxl: 30,
+  weightNormal: 400,
+  weightMedium: 500,
+  weightSemibold: 600,
+  weightBold: 700,
+}
