@@ -23,7 +23,7 @@ export default function DiagnosticsPage() {
       if (error) {
         console.error('Failed to load diagnoses:', error)
       } else {
-        setDiagnoses(data || [])
+        setDiagnoses((data as unknown as Diagnosis[]) || [])
         if (data && data.length > 0) setSelectedId(data[0].id)
       }
       setLoading(false)
