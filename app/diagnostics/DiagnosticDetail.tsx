@@ -67,7 +67,7 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
 
 
   const fieldStyle: CSSProperties = {
-    marginBottom: dimensions.spacingMd,
+    marginBottom: 10,
   }
 
   const cardStyle: CSSProperties = {
@@ -168,7 +168,7 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
               Diagnosis
             </div>
 
-          <div style={fieldStyle}>
+          <div style={{ marginBottom: 4 }}>
             <DiagnosisValidation
               key={`diag-${diagnosis.id}`}
               diagnosisId={diagnosis.id}
@@ -208,7 +208,22 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
             </div>
           )}
 
-          <div style={fieldStyle}>
+          {diagnosis.short_note && (
+            <div style={fieldStyle}>
+              <span style={labelStyle}>Note</span>
+              <div style={valueStyle}>{diagnosis.short_note}</div>
+            </div>
+          )}
+
+          {diagnosis.follow_up_suggestion && (
+            <div style={{ marginBottom: 14 }}>
+              <span style={labelStyle}>Follow-up Suggestion</span>
+              <div style={valueStyle}>{diagnosis.follow_up_suggestion}</div>
+              <div style={{ borderBottom: `1px solid ${colors.border}`, marginTop: 16 }} />
+            </div>
+          )}
+
+          <div style={{ marginBottom: 4 }}>
             {diagnosis.treatment_shown && diagnosis.treatment_groups ? (
               <TreatmentValidation
                 key={`treat-${diagnosis.id}`}

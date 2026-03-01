@@ -5,7 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'CMS — Crop Management System',
+  title: 'CMS',
   description: 'Vegify diagnostic review platform',
 }
 

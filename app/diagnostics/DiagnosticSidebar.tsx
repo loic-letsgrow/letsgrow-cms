@@ -25,6 +25,8 @@ export interface Diagnosis {
   photo_1_url: string
   photo_2_url: string | null
   reasoning: string | null
+  short_note: string | null
+  follow_up_suggestion: string | null
   expert_notes: string | null
   treatment_validation: string | null
   expert_correct_treatment: string | null
@@ -57,7 +59,7 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
   const doneDiagnoses = filtered.filter(d => d.status === 'done')
 
   const sidebarStyle: CSSProperties = {
-    width: dimensions.sidebarWidth,
+    width: 180,
     height: '100%',
     flexShrink: 0,
     backgroundColor: colors.darkGrey,
