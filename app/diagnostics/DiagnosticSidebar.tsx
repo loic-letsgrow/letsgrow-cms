@@ -19,6 +19,7 @@ export interface Diagnosis {
   secondary_confidence: number | null
   treatment_shown: boolean
   treatment_group: string | null
+  pre_treatment_advice: string | null
   expert_validation: string | null
   expert_correct_diagnosis: string | null
   treatment_groups: { name: string; active_ingredients: string[] } | null

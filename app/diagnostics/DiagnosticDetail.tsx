@@ -242,12 +242,10 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
             )}
           </div>
 
-          {diagnosis.treatment_shown && diagnosis.treatment_groups && (
+          {diagnosis.pre_treatment_advice && (
             <div style={fieldStyle}>
-              <span style={labelStyle}>Recommendations</span>
-              <div style={valueStyle}>
-                If there are more than 3 caterpillars per plant, apply the treatment. If less than 3 per plant, then pick them up manually.
-              </div>
+              <span style={labelStyle}>Pre-treatment advice</span>
+              <div style={valueStyle}>{diagnosis.pre_treatment_advice}</div>
             </div>
           )}
 
