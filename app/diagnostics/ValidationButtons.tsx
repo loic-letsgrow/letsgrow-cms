@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createBrowserClient } from '@/lib/supabase/client'
 import { colors, typography, dimensions } from '@/lib/theme'
+import { fieldHeight } from '@/lib/theme/dimensions'
 import { Select } from '@/components/shared/ui/Select'
 
 interface PestDisease {
@@ -169,21 +170,48 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, confidenc
   const [validation, setValidation] = useState(currentValidation ?? '')
   const [correctDiagnosis, setCorrectDiagnosis] = useState(currentCorrect ?? '')
   const [manualEntry, setManualEntry] = useState('')
-  const [showManual, setShowManual] = useState(currentCorrect === 'other')
+  const [showManual, setShowManual] = useState(false)
   const [pestDiseases, setPestDiseases] = useState<PestDisease[]>([])
+  const [pestDiseasesLoaded, setPestDiseasesLoaded] = useState(false)
 
   useEffect(() => {
     const fetch = async () => {
       const supabase = createBrowserClient()
+
+      // Step 1: look up the crop_family for this crop
+      const { data: cropData } = await supabase
+        .from('crops')
+        .select('crop_family')
+        .eq('crop_name', crop)
+        .single()
+
+      const cropFamily = cropData?.crop_family ?? crop // fallback to raw crop name if not found
+
+      // Step 2: fetch pest_diseases for that crop_family
       const { data } = await supabase
         .from('pest_diseases')
         .select('scientific_name, common_name')
-        .eq('crop', crop)
+        .eq('crop_family', cropFamily)
         .order('scientific_name')
+
       if (data) setPestDiseases(data)
+      setPestDiseasesLoaded(true)
     }
     fetch()
   }, [crop])
+
+  useEffect(() => {
+    // Wait until fetch has completed before checking for manual entry
+    if (!pestDiseasesLoaded) return
+    if (!currentCorrect || currentCorrect === 'uncertain') return
+    const knownValues = pestDiseases.map(p => p.scientific_name)
+    knownValues.push('uncertain', 'other')
+    if (!knownValues.includes(currentCorrect)) {
+      setShowManual(true)
+      setManualEntry(currentCorrect)
+      setCorrectDiagnosis('other')
+    }
+  }, [pestDiseasesLoaded, currentCorrect])
 
   const save = async (val: string, correct: string | null) => {
     const supabase = createBrowserClient()
@@ -221,12 +249,11 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, confidenc
   const handleManualSave = async () => {
     if (!manualEntry.trim()) return
     setCorrectDiagnosis(manualEntry.trim())
-    setShowManual(false)
     await save(validation, manualEntry.trim())
   }
 
   const pestOptions = [
-    ...pestDiseases.map(p => ({ value: p.scientific_name, label: `${p.scientific_name} (${p.common_name})` })),
+    ...pestDiseases.map(p => ({ value: p.scientific_name, label: `${p.scientific_name} - ${p.common_name}` })),
     { value: 'uncertain', label: 'Uncertain' },
     { value: 'other', label: 'Other (manual entry)' },
   ]
@@ -270,7 +297,7 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, confidenc
 
       {/* Correction row — below, full width */}
       {validation === 'wrong' && (
-        <div style={{ marginTop: 6 }}>
+        <div style={{ marginTop: 10 }}>
           <Select
             value={correctDiagnosis}
             onChange={handleCorrectChange}
@@ -278,25 +305,29 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, confidenc
             placeholder="Select correct diagnosis..."
           />
           {showManual && (
-            <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
+            <div style={{ display: 'flex', gap: 16, marginTop: 10 }}>
               <input
                 value={manualEntry}
                 onChange={(e) => setManualEntry(e.target.value)}
                 placeholder="Enter diagnosis..."
                 style={{
                   flex: 1,
-                  fontSize: typography.sizeXs,
+                  height: fieldHeight,
+                  fontSize: typography.sizeXsSm,
+                  color: colors.textDarkBlue,
                   border: `1px solid ${colors.border}`,
                   borderRadius: dimensions.radiusSmall,
-                  padding: '2px 6px',
+                  paddingLeft: 8,
+                  paddingRight: 8,
                   outline: 'none',
+                  boxSizing: 'border-box' as const,
                 }}
               />
               <button
                 onClick={handleManualSave}
                 style={{
                   fontSize: typography.sizeXs,
-                  padding: '2px 8px',
+                  padding: '2px 16px',
                   borderRadius: 99,
                   border: 'none',
                   backgroundColor: colors.primaryBlue,

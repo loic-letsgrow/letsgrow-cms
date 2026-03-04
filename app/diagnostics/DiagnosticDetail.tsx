@@ -1,6 +1,7 @@
 'use client'
 
 import { CSSProperties, useState, useEffect, useRef } from 'react'
+import { createBrowserClient } from '@/lib/supabase/client'
 import { colors, dimensions, typography } from '@/lib/theme'
 import { Diagnosis } from './DiagnosticSidebar'
 import { Badge } from '@/components/shared/ui/Badge'
@@ -37,6 +38,23 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
   const [expertCorrectDiagnosis, setExpertCorrectDiagnosis] = useState(diagnosis.expert_correct_diagnosis)
   const [treatmentValidation, setTreatmentValidation] = useState(diagnosis.treatment_validation)
   const [expertCorrectTreatment, setExpertCorrectTreatment] = useState(diagnosis.expert_correct_treatment)
+
+  const [displayCommonName, setDisplayCommonName] = useState(diagnosis.primary_common_name)
+
+  useEffect(() => {
+    if (!diagnosis.primary_diagnosis || diagnosis.primary_diagnosis === 'Uncertain') return
+    const lookup = async () => {
+      const supabase = createBrowserClient()
+      const { data } = await supabase
+        .from('pest_diseases')
+        .select('common_name')
+        .eq('scientific_name', diagnosis.primary_diagnosis)
+        .limit(1)
+        .single()
+      if (data?.common_name) setDisplayCommonName(data.common_name)
+    }
+    lookup()
+  }, [diagnosis.primary_diagnosis])
 
   const date = new Date(diagnosis.created_at).toLocaleString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -165,10 +183,10 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
           <div style={{ aspectRatio: '3 / 4', overflow: 'hidden' }}>
           <div style={{ ...cardStyle, overflowY: 'auto', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ fontSize: 21, fontWeight: typography.weightSemibold, color: colors.textDarkBlue, marginBottom: dimensions.spacingMd }}>
-              {diagnosis.primary_common_name?.toLowerCase() === 'uncertain' ? (
+              {displayCommonName?.toLowerCase() === 'uncertain' ? (
                 <><span style={{ fontWeight: typography.weightNormal }}>Diagnosis </span>Uncertain</>
               ) : (
-                <><span style={{ fontWeight: typography.weightNormal }}>Likely </span>{diagnosis.primary_common_name}</>
+                <><span style={{ fontWeight: typography.weightNormal }}>Likely </span>{displayCommonName}</>
               )}
             </div>
 
