@@ -32,6 +32,8 @@ export interface Diagnosis {
   treatment_validation: string | null
   expert_correct_treatment: string | null
   status: string
+  vegclinic_user_id: string | null
+  vegclinic_users: { first_name: string; last_name: string } | null
 }
 
 interface DiagnosticSidebarProps {
@@ -213,12 +215,14 @@ function DiagnosticCard({ diagnosis, isSelected, onClick }: { diagnosis: Diagnos
       }} />
       <div>
         <div style={nameStyle}>{diagnosis.crop}</div>
-        <div style={{ ...subtextStyle, marginBottom: 3 }}>
-          {new Date(diagnosis.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })}
-        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
           <span style={subtextStyle}>{diagnosis.primary_diagnosis}</span>
           <span style={confidenceBadgeStyle}>{diagnosis.primary_confidence}%</span>
+        </div>
+        <div style={{ ...subtextStyle, marginBottom: 3 }}>
+          {diagnosis.vegclinic_users
+            ? `${diagnosis.vegclinic_users.first_name} ${diagnosis.vegclinic_users.last_name}`
+            : '—'}
         </div>
         <div style={subtextStyle}>{diagnosis.model_name}</div>
       </div>
