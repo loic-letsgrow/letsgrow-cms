@@ -165,7 +165,11 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
           <div style={{ aspectRatio: '3 / 4', overflow: 'hidden' }}>
           <div style={{ ...cardStyle, overflowY: 'auto', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ fontSize: 21, fontWeight: typography.weightSemibold, color: colors.textDarkBlue, marginBottom: dimensions.spacingMd }}>
-              Diagnosis
+              {diagnosis.primary_common_name?.toLowerCase() === 'uncertain' ? (
+                <><span style={{ fontWeight: typography.weightNormal }}>Diagnosis </span>Uncertain</>
+              ) : (
+                <><span style={{ fontWeight: typography.weightNormal }}>Likely </span>{diagnosis.primary_common_name}</>
+              )}
             </div>
 
           <div style={{ marginBottom: 4 }}>
