@@ -9,6 +9,7 @@ interface SettingsCardItem {
   id: string
   label: string
   subtitle?: string
+  subtitle2?: string
   searchText?: string
 }
 
@@ -149,6 +150,7 @@ export function SettingsCard({ title, items, onAdd, onItemClick }: SettingsCardP
               <div>
                 <div style={labelStyle}>{item.label}</div>
                 {item.subtitle && <div style={subtitleStyle}>{item.subtitle}</div>}
+              {item.subtitle2 && <div style={subtitleStyle}>{item.subtitle2}</div>}
               </div>
               <PencilIcon />
             </div>

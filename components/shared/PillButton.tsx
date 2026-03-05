@@ -6,7 +6,7 @@ import { buttonHeight } from '@/lib/theme/dimensions'
 
 interface PillButtonProps {
   label: string
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'danger'
   onClick?: () => void
   disabled?: boolean
   width?: number
@@ -16,6 +16,7 @@ export function PillButton({ label, variant = 'primary', onClick, disabled = fal
   const [animating, setAnimating] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const isPrimary = variant === 'primary'
+  const isDanger = variant === 'danger'
 
   const handleClick = async () => {
     setAnimating(true)
@@ -35,9 +36,9 @@ export function PillButton({ label, variant = 'primary', onClick, disabled = fal
     paddingLeft: width ? 0 : 16,
     paddingRight: width ? 0 : 16,
     borderRadius: 9999,
-    border: isPrimary ? 'none' : `1.5px solid ${colors.border}`,
-    backgroundColor: isPrimary ? colors.primaryBlue : colors.white,
-    color: isPrimary ? colors.white : colors.textDarkBlue,
+    border: isPrimary || isDanger ? 'none' : `1.5px solid ${colors.border}`,
+    backgroundColor: isPrimary ? colors.primaryBlue : isDanger ? colors.error : colors.white,
+    color: isPrimary || isDanger ? colors.white : colors.textDarkBlue,
     fontSize: typography.sizeXsSm,
     fontWeight: typography.weightMedium,
     lineHeight: 1,
