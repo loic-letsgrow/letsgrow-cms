@@ -187,14 +187,17 @@ export function DiagnosisValidation({ diagnosisId, crop, label, value, confidenc
 
       const cropFamily = cropData?.crop_family ?? crop // fallback to raw crop name if not found
 
-      // Step 2: fetch pest_diseases for that crop_family
-      const { data } = await supabase
-        .from('pest_diseases')
-        .select('scientific_name, common_name')
+      // Step 2: fetch scientific names for that crop_family, with common_name from scientific_names
+      const { data: cpd } = await supabase
+        .from('crop_pests_diseases')
+        .select('scientific_name, scientific_names(common_name)')
         .eq('crop_family', cropFamily)
         .order('scientific_name')
 
-      if (data) setPestDiseases(data)
+      if (cpd) setPestDiseases(cpd.map(r => ({
+        scientific_name: r.scientific_name,
+        common_name: (r.scientific_names as any)?.common_name ?? r.scientific_name,
+      })))
       setPestDiseasesLoaded(true)
     }
     fetch()
