@@ -62,7 +62,7 @@ export function DiagnosticSidebar({ diagnoses, selectedId, onSelect }: Diagnosti
   const doneDiagnoses = filtered.filter(d => d.status === 'done')
 
   const sidebarStyle: CSSProperties = {
-    width: 180,
+    width: 210,
     height: '100%',
     flexShrink: 0,
     backgroundColor: colors.darkGrey,

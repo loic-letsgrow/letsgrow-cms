@@ -172,15 +172,15 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
         paddingRight: `clamp(${dimensions.pageSidebarPaddingMin}px, 4vw, 60px)`,
         paddingBottom: dimensions.spacingLg,
       }}>
-        {/* Top row: 3 equal columns via CSS grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: dimensions.spacingLg }}>
+        {/* Top row: fixed 65vh height, photos 25% width each, diagnosis card takes the rest */}
+        <div style={{ display: 'flex', gap: dimensions.spacingLg, height: '65vh' }}>
           {/* Photo 1 */}
-          <div onClick={() => setZoomedPhoto(diagnosis.photo_1_url)} style={{ aspectRatio: '3 / 4', borderRadius: dimensions.radiusSmall, border: `1px solid ${colors.border}`, overflow: 'hidden', backgroundColor: colors.darkGrey, cursor: 'zoom-in' }}>
+          <div onClick={() => setZoomedPhoto(diagnosis.photo_1_url)} style={{ width: '25%', flexShrink: 0, borderRadius: dimensions.radiusSmall, border: `1px solid ${colors.border}`, overflow: 'hidden', backgroundColor: colors.darkGrey, cursor: 'zoom-in' }}>
             <img src={diagnosis.photo_1_url} alt="Photo 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 
-          {/* Results card — wrapper locks height to match photo aspect ratio */}
-          <div style={{ aspectRatio: '3 / 4', overflow: 'hidden' }}>
+          {/* Results card */}
+          <div style={{ flex: 1, overflow: 'hidden' }}>
           <div style={{ ...cardStyle, overflowY: 'auto', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ fontSize: 21, fontWeight: typography.weightSemibold, color: colors.textDarkBlue, marginBottom: dimensions.spacingMd }}>
               {displayCommonName?.toLowerCase() === 'uncertain' ? (
@@ -283,7 +283,7 @@ export function DiagnosticDetail({ diagnosis, status, onStatusChange, onUpdate }
           </div>
 
           {/* Photo 2 */}
-          <div onClick={() => diagnosis.photo_2_url && setZoomedPhoto(diagnosis.photo_2_url)} style={{ aspectRatio: '3 / 4', borderRadius: dimensions.radiusSmall, border: `1px solid ${colors.border}`, overflow: 'hidden', backgroundColor: colors.darkGrey, cursor: diagnosis.photo_2_url ? 'zoom-in' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div onClick={() => diagnosis.photo_2_url && setZoomedPhoto(diagnosis.photo_2_url)} style={{ width: '25%', flexShrink: 0, borderRadius: dimensions.radiusSmall, border: `1px solid ${colors.border}`, overflow: 'hidden', backgroundColor: colors.darkGrey, cursor: diagnosis.photo_2_url ? 'zoom-in' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {diagnosis.photo_2_url
               ? <img src={diagnosis.photo_2_url} alt="Photo 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <span style={{ fontSize: typography.sizeXs, color: colors.superDarkGrey, fontStyle: 'italic' }}>No photo 2</span>

@@ -107,7 +107,7 @@ export function NavBar() {
       <header style={headerStyle}>
         <div style={containerStyle}>
           {/* Logo group — width matches sidebar */}
-          <div style={{ width: 180, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 210, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
           <Link href="/diagnostics" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Image
               src="/assets/letsgrow-logo.png"
